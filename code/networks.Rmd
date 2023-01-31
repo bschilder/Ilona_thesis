@@ -1,0 +1,30 @@
+---
+title: "networks"
+author: "Brian M. Schilder"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup}
+source(here::here("code","functions.R"))
+```
+
+# Contributors network
+
+```{r, results='asis'}
+g <- prep_graph()
+visnet <- plot_graph(g = g)
+
+visNetwork::renderVisNetwork(expr = {visnet})
+```
+
+
+
+
+
+# Session info
+<details>
+```{r}
+utils::sessionInfo()
+```
+</details>
