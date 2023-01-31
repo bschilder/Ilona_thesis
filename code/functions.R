@@ -56,7 +56,8 @@ plot_graph <- function(g,
                                            roundness=.5),
                              width = 10) |>
         visNetwork::visExport(type = "pdf", 
-                              name = gsub("\\.html","",basename(save_path)))
+                              name = gsub("\\.html","",basename(save_path))) |>
+        visNetwork::visOptions(height = 800, width=1300)
     
     #### Save plot ####
     dir.create(dirname(save_path),showWarnings = FALSE, recursive = TRUE)
