@@ -11,7 +11,7 @@
 
 <meta name="author" content="Brian M. Schilder" />
 
-<meta name="date" content="2023-01-31" />
+<meta name="date" content="2023-03-05" />
 
 <title>networks</title>
 
@@ -5655,7 +5655,7 @@ display: none;
 
 <h1 class="title toc-ignore">networks</h1>
 <h4 class="author">Brian M. Schilder</h4>
-<h4 class="date">2023-01-31</h4>
+<h4 class="date">2023-03-05</h4>
 
 </div>
 
@@ -5664,10 +5664,17 @@ display: none;
 <div id="contributors-network" class="section level1">
 <h1>Contributors network</h1>
 <pre class="r"><code>g &lt;- prep_graph()
-visnet &lt;- plot_graph(g = g)
-
-visNetwork::renderVisNetwork(expr = {visnet})</code></pre>
-<div class="visNetwork html-widget html-widget-output shiny-report-size html-fill-item-overflow-hidden html-fill-item" id="out5acd604c1f1503b3" style="width:100%;height:400px;"></div>
+visnet &lt;- plot_graph(g = g)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>visNetwork::renderVisNetwork(expr = {visnet})</code></pre>
+<div class="visNetwork html-widget html-widget-output shiny-report-size html-fill-item-overflow-hidden html-fill-item" id="outef1f60370fbc2f5a" style="width:100%;height:400px;"></div>
 </div>
 <div id="session-info" class="section level1">
 <h1>Session info</h1>
@@ -5687,19 +5694,25 @@ visNetwork::renderVisNetwork(expr = {visnet})</code></pre>
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
+## other attached packages:
+## [1] dplyr_1.1.0
+## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.10       later_1.3.0       bslib_0.4.2       compiler_4.2.1   
-##  [5] jquerylib_0.1.4   pals_1.7          tools_4.2.1       digest_0.6.31    
-##  [9] jsonlite_1.8.4    evaluate_0.20     lifecycle_1.0.3   pkgconfig_2.0.3  
-## [13] rlang_1.0.6       igraph_1.3.5      shiny_1.7.4       cli_3.6.0        
-## [17] rstudioapi_0.14   mapproj_1.2.11    yaml_2.3.7        xfun_0.36        
-## [21] fastmap_1.1.0     rJava_1.0-6       stringr_1.5.0     knitr_1.42       
-## [25] xlsxjars_0.6.1    sass_0.4.5        vctrs_0.5.2       htmlwidgets_1.6.1
-## [29] maps_3.4.1        rprojroot_2.0.3   glue_1.6.2        data.table_1.14.6
-## [33] here_1.0.1        R6_2.5.1          rmarkdown_2.20    magrittr_2.0.3   
-## [37] promises_1.2.0.1  ellipsis_0.3.2    htmltools_0.5.4   dichromat_2.0-0.1
-## [41] xtable_1.8-4      mime_0.12         colorspace_2.1-0  httpuv_1.6.8     
-## [45] xlsx_0.6.5        stringi_1.7.12    visNetwork_2.1.2  cachem_1.0.6</code></pre>
+##  [1] tidyselect_1.2.0  xfun_0.37         bslib_0.4.2       rJava_1.0-6      
+##  [5] colorspace_2.1-0  vctrs_0.5.2       generics_0.1.3    htmltools_0.5.4  
+##  [9] yaml_2.3.7        utf8_1.2.3        rlang_1.0.6       later_1.3.0      
+## [13] jquerylib_0.1.4   pillar_1.8.1      glue_1.6.2        pals_1.7         
+## [17] lifecycle_1.0.3   stringr_1.5.0     munsell_0.5.0     gtable_0.3.1     
+## [21] visNetwork_2.1.2  htmlwidgets_1.6.1 mapproj_1.2.11    evaluate_0.20    
+## [25] knitr_1.42        fastmap_1.1.0     httpuv_1.6.9      fansi_1.0.4      
+## [29] xlsxjars_0.6.1    Rcpp_1.0.10       xtable_1.8-4      promises_1.2.0.1 
+## [33] scales_1.2.1      cachem_1.0.6      xlsx_0.6.5        jsonlite_1.8.4   
+## [37] mime_0.12         farver_2.1.1      ggplot2_3.4.1     digest_0.6.31    
+## [41] stringi_1.7.12    shiny_1.7.4       grid_4.2.1        rprojroot_2.0.3  
+## [45] here_1.0.1        cli_3.6.0         tools_4.2.1       magrittr_2.0.3   
+## [49] sass_0.4.5        maps_3.4.1        tibble_3.1.8      dichromat_2.0-0.1
+## [53] pkgconfig_2.0.3   ellipsis_0.3.2    data.table_1.14.8 rmarkdown_2.20.1 
+## [57] rstudioapi_0.14   R6_2.5.1          igraph_1.4.1      compiler_4.2.1</code></pre>
 </details>
 </div>
 

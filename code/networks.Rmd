@@ -20,9 +20,6 @@ visNetwork::renderVisNetwork(expr = {visnet})
 ```
 
 
-
-
-
 # Session info
 <details>
 ```{r}
