@@ -14,6 +14,7 @@ check_diff <- function(edges_dt,
 
 prep_graph <- function(file=here::here("data","contributors.xlsx")){ 
     
+    color_var <- "cluster"
     #### Edges ####
     edges_dt <- (xlsx::read.xlsx(file, sheetName = "edges") |>
             data.table::data.table()
