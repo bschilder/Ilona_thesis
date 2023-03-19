@@ -4,6 +4,13 @@ prep_strings <- function(x,
     stringr::str_trim(x) |>
         gsub(pattern = "\n",replacement = " ")
 }
+check_diff <- function(edges_dt,
+                       nodes_dt){
+    setdiff(c(edges_dt$from,edges_dt$to),
+            nodes_dt$old_name)
+    setdiff(nodes_dt$old_name,
+            c(edges_dt$from,edges_dt$to))
+}
 
 prep_graph <- function(file=here::here("data","contributors.xlsx")){ 
     
@@ -32,31 +39,53 @@ prep_graph <- function(file=here::here("data","contributors.xlsx")){
                                    role=toString(unique(role)),
                                    name=toString(unique(name)),
                                    cluster=list(unique(cluster)),
-                                   gradient=list(unique(gradient)),
-                                   show=list(unique(show))
+                                   cluster_str=paste(unique(cluster),collapse =";"),
+                                   gradient=unique(na.omit(gradient)),
+                                   show=unique(show)
                                 ),
-                          by="key"]   
+                          by="key"][,show:=ifelse(is.na(show),TRUE,show)] 
+    nodes_dt_agg$i <- seq_len(nrow(nodes_dt_agg))
+    nodes_dt_agg <- nodes_dt_agg |>  
+        dplyr::group_by(cluster_str) |> 
+        dplyr::mutate(gradient_i=ifelse(!is.na(gradient) & gradient, 
+                                        (dplyr::row_number()/dplyr::n())+.1,
+                                        .75)) |>
+        data.table::data.table()
+    # #### Assign node colors #### 
+    clusters_unique <- unique(unlist(nodes_dt_agg[[color_var]]))
+    ncolors <- length(clusters_unique)
+    my_palette <- stats::setNames(pals::ocean.phase(ncolors+1)[-1],
+                                  as.character(clusters_unique))
+    nodes_dt_agg[,color:=sapply(cluster, function(x){
+        my_palette[as.character(x[[1]])]
+    })][,color:=ggplot2::alpha(color,gradient_i)]
+    nodes_dt_agg[,border:=sapply(cluster, function(x){
+        idx <- if(length(x)>1) 2 else 1
+        ggplot2::alpha(my_palette[as.character(x[[idx]])], 1)
+    })]
+    #### Set shape ####
+    nodes_dt_agg[,shape:=ifelse(show,"dot","text")]
+    #### Add hover info ####
     nodes_dt_agg[,title:=paste0(
         "<strong>entity</strong>: ",entity,"<br>",
         ifelse(role=="NA","",paste0("<strong>role</strong>: ",role,"<br>")),
-        "<strong>cluster</strong>: ",cluster,"<br>"
-    )]
-    # setdiff(c(edges_dt$from,edges_dt$to),
-    #         nodes_dt$old_name)
-    # setdiff(nodes_dt$old_name,
-    #         c(edges_dt$from,edges_dt$to))
+        "<strong>cluster</strong>: ",cluster,"<br>",
+        "<strong>color</strong>: ",color,"<br>",
+        "<strong>border</strong>: ",border,"<br>"
+    )] 
+    #### Sort by cluster ####
+    nodes_dt_agg <- suppressWarnings(
+        nodes_dt_agg[order(as.numeric(nodes_dt_agg$cluster_str)),]
+    )
+    # data.table::setorderv(nodes_dt_agg,"cluster_str")
+    #### Convert to graph ####
     g <- igraph::graph_from_data_frame(d = edges_dt, 
                                        vertices = nodes_dt_agg) 
+    g <- tidygraph::as_tbl_graph(g) 
     #### Compute the number of connections per node ####
     igraph::V(g)$connections <- igraph::degree(g,mode = "all")
     igraph::V(g)$value <- igraph::V(g)$connections
-    color_var <- "cluster"
-    #### Assign node colors ####
-    ncolors <- length(unique(igraph::vertex_attr(g,color_var)))
-    my_palette <- ggplot2::alpha(pals::ocean.phase(ncolors+1),alpha = .75)
-    igraph::V(g)$color <- my_palette[
-        cut(sapply(igraph::vertex_attr(g,color_var),function(x){x[[1]]}) ,ncolors)
-    ]
+    color_var <- "cluster" 
     # plot(g)
     return(g)
 }
@@ -75,9 +104,9 @@ plot_graph <- function(g,
                        submain = NULL,
                        background = "black",
                        randomSeed = 2023){
-    library(dplyr)
-    # templateR:::args2vars(plot_graph)
+    # devoptera::args2vars(plot_graph, packages="dplyr")
     #### Create plot ####
+    set.seed(randomSeed)
     vn <-  
         visNetwork::toVisNetworkData(g) %>%
         {
@@ -95,16 +124,15 @@ plot_graph <- function(g,
         visNetwork::visPhysics(solver=solver,
                                forceAtlas2Based=forceAtlas2Based,
                                enabled = physics) |>
-        visNetwork::visNodes(#shape = "circle",     
-                             font = list(color="white", 
+        visNetwork::visNodes(font = list(color="white", 
                                          strokeWidth=5,
                                          strokeColor="rgba(0,0,0,0.5)"),  
                              shadow = list(enabled=TRUE,
-                                           size = 10), 
+                                           size = 20, 
+                                           color="rgba(255,255,255,0.5)"), 
                              borderWidth=3,
                              borderWidthSelected=6,
-                             color = list(border = "rgba(255,255,255,.5)",
-                                          hover = list(background="rgba(0,0,0,.5)"),
+                             color = list(border="background",
                                           highlight = list(background="#00FFFFCF",
                                                            border="#00FFFFCF")
                              ),
@@ -117,8 +145,9 @@ plot_graph <- function(g,
                              # )
         ) |>
         visNetwork::visEdges(arrows = "",
-                             # color = list(color="rgb(55,123,181, 0.7)",
-                             #              opacity=.5),
+                             # shadow = list(enabled=TRUE,
+                             #               size = 20, 
+                             #               color="rgba(255,255,255,0.5)"), 
                              smooth = list(enabled=TRUE,
                                            type="cubicBezier",
                                            roundness=.5),
@@ -129,7 +158,9 @@ plot_graph <- function(g,
         visNetwork::visInteraction(hover = TRUE) |>
         visNetwork::visOptions(height = 800,
                                width=1300,
-                               selectedBy = "cluster",
+                               selectedBy = list(variable="cluster_str",
+                                                 main="Cluster",
+                                                 sort=FALSE),
                                highlightNearest = list(enabled=TRUE,
                                                        degree=1))
     #### Show plot ####
