@@ -124,16 +124,18 @@ plot_graph <- function(g,
             do.call(visNetwork::visNetwork,
                     c(., list(main = main,
                               submain = submain,
+                              height = 14043/4,
+                              width = 9933/4,
                               background = background)
                     )
             )
         } |>
         visNetwork::visIgraphLayout(layout = "layout_with_graphopt",
                                     type = "full",
-                                    charge = .05,
+                                    charge = .008,
                                     # mass = 100,
                                     # spring.length = 50,
-                                    spring.constant = 0.5,
+                                    spring.constant = 0.1,
                                     physics = physics,
                                     randomSeed = randomSeed) |>
         # visNetwork::visLayout(improvedLayout = TRUE,
@@ -173,8 +175,7 @@ plot_graph <- function(g,
         # visNetwork::visExport(type = "pdf", 
         #                       name = gsub("\\.html","",basename(save_path))) |>
         visNetwork::visInteraction(hover = TRUE) |>
-        visNetwork::visOptions(height = "100%",
-                               width = "100%",
+        visNetwork::visOptions(
                                selectedBy = list(variable="cluster_str",
                                                  main="Cluster",
                                                  sort=FALSE),
