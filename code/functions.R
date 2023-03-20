@@ -113,7 +113,7 @@ plot_graph <- function(g,
                        show_plot = TRUE,
                        main = "Collaboration network",
                        submain = NULL,
-                       background = "black",
+                       background = "rgb(8,36,81)",
                        randomSeed = 2023){
     # devoptera::args2vars(plot_graph, packages="dplyr")
     #### Create plot ####
@@ -122,10 +122,11 @@ plot_graph <- function(g,
         visNetwork::toVisNetworkData(g) %>%
         {
             do.call(visNetwork::visNetwork,
-                    c(., list(main = main,
+                    c(., list(main = list(text=main,
+                                          style="color:white"),
                               submain = submain,
-                              height = 14043/4,
-                              width = 9933/4,
+                              height = 14043/8,
+                              width = 9933/8,
                               background = background)
                     )
             )
@@ -147,11 +148,11 @@ plot_graph <- function(g,
                                          strokeWidth=5,
                                          strokeColor="rgba(0,0,0,0.5)"),  
                              shadow = list(enabled=TRUE,
-                                           size = 20, 
+                                           size = 10, 
                                            color="rgba(255,255,255,0.5)"), 
                              borderWidth=3,
                              borderWidthSelected=6,
-                             color = list(border="background",
+                             color = list(hover=list(background="black"),
                                           highlight = list(background="#00FFFFCF",
                                                            border="#00FFFFCF")
                              ),
@@ -180,7 +181,9 @@ plot_graph <- function(g,
                                                  main="Cluster",
                                                  sort=FALSE),
                                highlightNearest = list(enabled=TRUE,
-                                                       degree=1))
+                                                       degree=1)) #|>
+    #     visNetwork::visEvents(type = "once", startStabilizing = "function() {
+    # this.moveTo({scale:.1})}")
     #### Show plot ####
     if(show_plot) methods::show(vn) 
     #### Save plot ####
