@@ -19,7 +19,7 @@ prep_graph <- function(file=here::here("data","contributors.xlsx")){
     edges_dt <- (xlsx::read.xlsx(file, sheetName = "edges") |>
             data.table::data.table()
     )[(!is.na(from) & !is.na(to)),]
-    edges_dt[,from:=lapply(from, prep_strings)][,to:=lapply(to,prep_strings)]
+    edges_dt[,from:=sapply(from, prep_strings)][,to:=sapply(to,prep_strings)] 
     #### Nodes ####
     nodes_dt <- xlsx::read.xlsx(file, sheetName = "nodes") |>
             data.table::data.table()
@@ -29,7 +29,7 @@ prep_graph <- function(file=here::here("data","contributors.xlsx")){
                paste0(entity),
                paste0(paste0(entity),
                       " (",role,")")) |>
-            stringr::str_wrap(width = 80) |>
+            stringr::str_wrap(width = 50) |>
             gsub(pattern="[(]",replacement="\n(") |>
             gsub(pattern="[,]",replacement=",\n") |>
             gsub(pattern="\n\n",replacement="\n") 
@@ -78,7 +78,17 @@ prep_graph <- function(file=here::here("data","contributors.xlsx")){
     nodes_dt_agg <- suppressWarnings(
         nodes_dt_agg[order(as.numeric(nodes_dt_agg$cluster_str)),]
     )
-    # data.table::setorderv(nodes_dt_agg,"cluster_str")
+    
+    #### Add all possible connections within clusters ##### 
+    extra_edges <- lapply(unique(nodes_dt_agg$cluster),
+                          function(clust){
+        nodes <- unique(nodes_dt_agg[cluster==clust,]$key)
+        cj <- data.table::CJ(from=nodes,to=nodes,unique = TRUE)     
+        cj[from!=to][,hidden:=TRUE]
+    }) |> data.table::rbindlist()
+    edges_dt <- data.table::rbindlist(list(edges_dt[,hidden:=FALSE],
+                                           extra_edges), fill = TRUE)
+    
     #### Convert to graph ####
     g <- igraph::graph_from_data_frame(d = edges_dt, 
                                        vertices = nodes_dt_agg) 
@@ -98,8 +108,8 @@ plot_graph <- function(g,
                        solver = "forceAtlas2Based",
                        physics = FALSE,
                        forceAtlas2Based = list(
-                           avoidOverlap=.75,
-                           gravitationalConstant=-100),
+                           avoidOverlap=1,
+                           gravitationalConstant=-500),
                        show_plot = TRUE,
                        main = "Collaboration network",
                        submain = NULL,
@@ -118,13 +128,19 @@ plot_graph <- function(g,
                     )
             )
         } |>
-        visNetwork::visIgraphLayout(layout = "layout_nicely",
+        visNetwork::visIgraphLayout(layout = "layout_with_graphopt",
                                     type = "full",
+                                    charge = .05,
+                                    # mass = 100,
+                                    # spring.length = 50,
+                                    spring.constant = 0.5,
                                     physics = physics,
                                     randomSeed = randomSeed) |>
+        # visNetwork::visLayout(improvedLayout = TRUE,
+        #                       clusterThreshold=10000) |>
         visNetwork::visPhysics(solver=solver,
                                forceAtlas2Based=forceAtlas2Based,
-                               enabled = physics) |>
+                               enabled = TRUE) |>
         visNetwork::visNodes(font = list(color="white", 
                                          strokeWidth=5,
                                          strokeColor="rgba(0,0,0,0.5)"),  
@@ -157,8 +173,8 @@ plot_graph <- function(g,
         # visNetwork::visExport(type = "pdf", 
         #                       name = gsub("\\.html","",basename(save_path))) |>
         visNetwork::visInteraction(hover = TRUE) |>
-        visNetwork::visOptions(height = 800,
-                               width=1300,
+        visNetwork::visOptions(height = "100%",
+                               width = "100%",
                                selectedBy = list(variable="cluster_str",
                                                  main="Cluster",
                                                  sort=FALSE),

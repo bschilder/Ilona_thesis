@@ -7,16 +7,19 @@ output: html_document
 ---
 
 ```{r setup}
-source(here::here("code","functions.R"))
+library(dplyr)
+
 ```
 
 # Contributors network
 
 ```{r, results='asis'}
+source(here::here("code","functions.R"))
 g <- prep_graph()
 visnet <- plot_graph(g = g)
 
-visNetwork::renderVisNetwork(expr = {visnet})
+# visNetworkç::renderVisNetwork(expr = {visnet})
+visnet
 ```
 
 
