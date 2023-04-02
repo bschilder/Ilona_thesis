@@ -16,10 +16,12 @@ library(dplyr)
 ```{r, results='asis'}
 source(here::here("code","functions.R"))
 g <- prep_graph()
-visnet <- plot_graph(g = g)
+visnet <- plot_graph(g = g,  
+                     open = TRUE)
 
 # visNetworkç::renderVisNetwork(expr = {visnet})
-visnet
+# visnet
+
 ```
 
 
