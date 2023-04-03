@@ -6,11 +6,20 @@ prep_strings <- function(x,
 }
 check_diff <- function(edges_dt,
                        nodes_dt){
-    setdiff(c(edges_dt$from,edges_dt$to),
-            nodes_dt$old_name)
-    setdiff(nodes_dt$old_name,
-            c(edges_dt$from,edges_dt$to))
+    message("Checking: from --> key")
+    setdiff(edges_dt$from,
+            nodes_dt$key) |> print()
+    message("Checking: to --> key")
+    setdiff(edges_dt$to,
+            nodes_dt$key)|> print()
+    message("Checking: key --> from")
+    setdiff(nodes_dt$key,
+            edges_dt$from)|> print()
+    message("Checking: key --> to")
+    setdiff(nodes_dt$key,
+            edges_dt$to)|> print()
 }
+# check_diff(edges_dt,nodes_dt)
 
 prep_graph <- function(file=here::here("data","contributors.xlsx")){ 
     
@@ -58,6 +67,9 @@ prep_graph <- function(file=here::here("data","contributors.xlsx")){
                                         (dplyr::row_number()/dplyr::n())+min_alpha,
                                         .75)) |>
         data.table::data.table()
+    
+    
+    # check_diff(edges_dt,nodes_dt_agg)
     #### Assign node colors ####
     clusters_unique <- unique(unlist(nodes_dt_agg[[color_var]]))
     ncolors <- length(clusters_unique)
@@ -103,6 +115,7 @@ prep_graph <- function(file=here::here("data","contributors.xlsx")){
                                       fill = TRUE)
     # edges_dt <- edges_dt[!duplicated(paste(edges_dt$from,edges_dt$to))]
     #### Convert to graph ####
+    # check_diff(edges_dt,nodes_dt_agg) 
     g <- igraph::graph_from_data_frame(d = edges_dt, 
                                        vertices = nodes_dt_agg) #|>
     g <- tidygraph::as_tbl_graph(g)
