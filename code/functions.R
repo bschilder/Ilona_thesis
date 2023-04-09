@@ -2,7 +2,7 @@
 prep_strings <- function(x,
                          width = 50){
     stringr::str_trim(x) |>
-        gsub(pattern = "\n",replacement = ", ") |>
+        gsub(pattern = "\n",replacement = ",<br> ") |>
         gsub(pattern = " +",replacement = " ")
 }
 check_diff <- function(edges_dt,
@@ -137,6 +137,8 @@ prep_graph <- function(file=here::here("data","contributors.xlsx")){
     igraph::V(g)$connections <- igraph::degree(g,mode = "all")
     #### Add size ####
     igraph::V(g)$value <- igraph::V(g)$connections*igraph::V(g)$mult 
+    #### Add shape ####
+    igraph::V(g)$shape <- ifelse(igraph::V(g)$cluster_str=="Projects","hexagon","dot")
     #### Add group ####
     igraph::V(g)$group <- igraph::V(g)$cluster_str
     # View(tidyr::as_tibble(g))
@@ -182,11 +184,12 @@ plot_graph <- function(g,
         } |>
         # visNetwork::visIgraph(igraph = g, type="full") |> 
         # visNetwork::visIgraphLayout(layout = "layout_with_graphopt",
-        #                             type = "full",
-        #                             charge = .025,
+        #                             # layout = "layout_with_kk",
+        #                             # type = "full",
+        #                             # charge = .025,
         #                             # mass = 100,
         #                             # spring.length = 50,
-        #                             spring.constant = 1,
+        #                             # spring.constant = 1,
         #                             physics = physics,
         #                             randomSeed = randomSeed) |>
         # visNetwork::visLayout(improvedLayout = TRUE,
