@@ -161,7 +161,7 @@ plot_graph <- function(g,
                            ),
                        groups = NULL,
                        show_plot = TRUE,
-                       main = "Scroll to zoom.<br>Double-click to resize.",
+                       main = "Scroll to zoom. Double-click background to resize.",
                        submain = "Select cluster:",
                        background = "rgb(8,36,81)",
                        open=FALSE,
@@ -253,7 +253,7 @@ plot_graph <- function(g,
                                                      scale_size = TRUE,
                                                      color = ggplot2::alpha("white",.75),
                                                      force = TRUE,
-                                                     label = "+ Click to expand +\n")
+                                                     label = "+ Double-click to expand +\n")
     } 
     #### Show plot ####
     if(show_plot) methods::show(vn) 
