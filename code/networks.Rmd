@@ -17,6 +17,8 @@ library(dplyr)
 source(here::here("code","functions.R"))
 g <- prep_graph()
 visnet <- plot_graph(g = g,  
+                     # groups = "Deep Structure",
+                     # physics = TRUE,
                      open = TRUE)
 
 # visNetworkç::renderVisNetwork(expr = {visnet})
