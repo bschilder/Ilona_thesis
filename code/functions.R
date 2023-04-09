@@ -161,7 +161,7 @@ plot_graph <- function(g,
                            ),
                        groups = NULL,
                        show_plot = TRUE,
-                       main = "Hold left-click to resize.",
+                       main = "Scroll to zoom.<br>Double-click to resize.",
                        submain = "Select cluster:",
                        background = "rgb(8,36,81)",
                        open=FALSE,
@@ -180,7 +180,7 @@ plot_graph <- function(g,
                               submain = list(text=submain,
                                              style="color:white"),
                               width = "100%", 
-                              height = "92.5vh",
+                              height = "90vh",
                               background = background)
                     )
             )
@@ -246,7 +246,7 @@ plot_graph <- function(g,
                                highlightNearest = list(enabled=TRUE,
                                                        degree=1))  
     vn <-  vn |> visNetwork::visEvents(type = "on", 
-                                       hold = "function(){ this.fit()}")        
+                                       doubleClick = "function(){ this.fit()}")        
     if(!is.null(groups)){
         vn <- vn |> visNetwork::visClusteringByGroup(groups = as.factor(groups),
                                                      shape = "diamond",
