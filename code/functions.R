@@ -156,7 +156,7 @@ plot_graph <- function(g,
                        forceAtlas2Based = list(
                            damping=3.75,# higher damping = less spinning
                            avoidOverlap=2,
-                           gravitationalConstant= -135
+                           gravitationalConstant= -175
                            # springLength=50
                            ),
                        groups = NULL,
