@@ -192,8 +192,7 @@ plot_graph <- function(g,
         #                             # spring.constant = 1,
         #                             physics = physics,
         #                             randomSeed = randomSeed) |>
-        # visNetwork::visLayout(improvedLayout = TRUE,
-        #                       clusterThreshold=10000) |>
+        visNetwork::visLayout(randomSeed = randomSeed) |>
         visNetwork::visPhysics(solver=solver,
                                # timestep = .25,
                                # maxVelocity = 100,
