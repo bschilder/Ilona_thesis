@@ -18,7 +18,7 @@ source(here::here("code","functions.R"))
 g <- prep_graph()
 visnet <- plot_graph(g = g,  
                      randomSeed = 2020,
-                     # groups = "Deep Structure",
+                     # groups = unique(igraph::V(g)$group)[-1],
                      #   save_path=here::here("figures",
                      #                        "contributors_network_collapsed.html"),
                      open = TRUE)

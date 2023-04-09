@@ -42,10 +42,11 @@ prep_graph <- function(file=here::here("data","contributors.xlsx")){
     nodes_dt <- xlsx::read.xlsx(file, sheetName = "nodes") |>
             data.table::data.table()
     nodes_dt <- nodes_dt[,key:=lapply(key, prep_strings)] 
-    nodes_dt[,name:=(entity |>
-        # ifelse(is.na(role),
-        #        entity,
-        #        paste0(entity," (",role,")") ) |>
+    nodes_dt[,name:=(
+        # entity |>
+        ifelse(is.na(role),
+               entity,
+               paste0(entity," (",role,")") ) |>
             stringr::str_wrap(width = 50) |>
             gsub(pattern="[(]",replacement="\n(") |>
             gsub(pattern="[,]",replacement=",\n") |>
@@ -243,10 +244,11 @@ plot_graph <- function(g,
         # visNetwork::visClusteringOutliers(.5)
     if(!is.null(groups)){
         vn <- vn |> visNetwork::visClusteringByGroup(groups = as.factor(groups),
-                                                     shape = "database",
-                                                     color = "grey",
+                                                     shape = "diamond",
+                                                     scale_size = TRUE,
+                                                     color = ggplot2::alpha("white",.75),
                                                      force = TRUE,
-                                                     label = "Click to expand: ")
+                                                     label = "+ Click to expand +\n")
     } 
     #### Show plot ####
     if(show_plot) methods::show(vn) 
