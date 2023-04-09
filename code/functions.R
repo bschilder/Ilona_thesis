@@ -161,10 +161,11 @@ plot_graph <- function(g,
                            ),
                        groups = NULL,
                        show_plot = TRUE,
-                       main = "Collaboration network",
-                       submain = NULL,
+                       main = "Hold left-click to resize.",
+                       submain = "Select cluster:",
                        background = "rgb(8,36,81)",
                        open=FALSE,
+                       stabilization = TRUE,
                        randomSeed = 2023){
     # devoptera::args2vars(plot_graph, packages="dplyr")
     #### Create plot ####
@@ -176,7 +177,8 @@ plot_graph <- function(g,
             do.call(visNetwork::visNetwork,
                     c(., list(main = list(text=main,
                                           style="color:white"),
-                              submain = submain,
+                              submain = list(text=submain,
+                                             style="color:white"),
                               width = "100%", 
                               height = "92.5vh",
                               background = background)
@@ -196,10 +198,11 @@ plot_graph <- function(g,
         visNetwork::visLayout(randomSeed = randomSeed) |>
         visNetwork::visPhysics(solver=solver,
                                # timestep = .25,
-                               # maxVelocity = 100,
-                               # stabilization = list(iterations=2000),
+                               # maxVelocity = 100, 
                                forceAtlas2Based=forceAtlas2Based,
-                               enabled = TRUE) |>
+                               stabilization = list(enabled=stabilization,
+                                                    fit=TRUE),
+                               enabled = physics) |>
         visNetwork::visNodes(font = list(color="white", 
                                          strokeWidth=5,
                                          strokeColor="rgba(0,0,0,0.5)"),  
@@ -237,11 +240,13 @@ plot_graph <- function(g,
                                    tooltipDelay = 100) |>
         # visNetwork::visLegend() |>
         visNetwork::visOptions(selectedBy = list(variable="cluster_str",
-                                                 main="Cluster",
+                                                 main="--",
                                                  sort=FALSE),  
+                               autoResize = TRUE, 
                                highlightNearest = list(enabled=TRUE,
-                                                       degree=1)) 
-        # visNetwork::visClusteringOutliers(.5)
+                                                       degree=1))  
+    vn <-  vn |> visNetwork::visEvents(type = "on", 
+                                       hold = "function(){ this.fit()}")        
     if(!is.null(groups)){
         vn <- vn |> visNetwork::visClusteringByGroup(groups = as.factor(groups),
                                                      shape = "diamond",
