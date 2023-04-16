@@ -8,26 +8,31 @@ output: html_document
 
 ```{r setup}
 library(dplyr)
-
+devoptera::source_all(here::here("code"))
 ```
 
 # Contributors network
 
 ```{r, results='asis'}
-source(here::here("code","functions.R"))
 g <- prep_graph()
 visnet <- plot_graph(g = g,  
                      randomSeed = 2020,
                      physics=TRUE,
-                     stabilization = FALSE, 
-                     groups = unique(igraph::V(g)$group)[-1],
-                       save_path=here::here("figures",
-                                            "contributors_network_collapsed.html"),
+                     # stabilization = FALSE, 
+                     # groups = unique(igraph::V(g)$group)[-1],
+                     #   save_path=here::here("figures",
+                     #                        "contributors_network_collapsed.html"),
                      open = TRUE)
 
 # visNetworkç::renderVisNetwork(expr = {visnet})
-# visnet
+# visnet 
+```
 
+## 3D plot
+```{r}
+plt <- plot_3d(g = g,
+               show_plot = FALSE,
+               save_path = here::here("figures","contributors_network_3d.html"))
 ```
 
 
