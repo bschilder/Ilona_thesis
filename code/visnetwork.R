@@ -18,7 +18,7 @@ visnetwork <- function(g,
                        open=FALSE,
                        stabilization = TRUE,
                        select_dropdown = TRUE,
-                       navigationButtons = FALSE,
+                       navigationButtons = TRUE,
                        width = "100%", 
                        height = "90vh",
                        randomSeed = 2023){

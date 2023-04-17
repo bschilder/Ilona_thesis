@@ -27,6 +27,7 @@ brew ins
 vn <- visnetwork(g = g,  
                  randomSeed = 2020,
                  physics = TRUE, 
+                 submain = NULL,
                  # width = "2000px",
                  # height = "100vh",
                  # background = NULL,
