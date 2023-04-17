@@ -13,28 +13,68 @@ devoptera::source_all(here::here("code"))
 
 # Contributors network
 
-```{r, results='asis'}
-g <- prep_graph()
-visnet <- plot_graph(g = g,  
-                     randomSeed = 2020,
-                     physics=TRUE,
-                     # stabilization = FALSE, 
-                     # groups = unique(igraph::V(g)$group)[-1],
-                     #   save_path=here::here("figures",
-                     #                        "contributors_network_collapsed.html"),
-                     open = TRUE)
+## Construct network
 
-# visNetworkç::renderVisNetwork(expr = {visnet})
-# visnet 
-```
-
-## 3D plot
 ```{r}
-plt <- plot_3d(g = g,
-               show_plot = FALSE,
-               save_path = here::here("figures","contributors_network_3d.html"))
+g <- prep_graph()
 ```
 
+## Visnetwork
+
+brew ins
+
+```{r, results='asis'}
+vn <- visnetwork(g = g,  
+                 randomSeed = 2020,
+                 physics = TRUE, 
+                 # width = "2000px",
+                 # height = "100vh",
+                 # background = NULL,
+                 # select_dropdown = FALSE, main = NULL,submain = NULL,
+                 # stabilization = FALSE, 
+                 # groups = unique(igraph::V(g)$group)[-1],
+                 #   save_path=here::here("figures",
+                 #                        "contributors_network_collapsed.html"),
+                 open = TRUE) 
+
+
+```
+
+### Save PDF
+
+```{r}
+# w <- htmlwidgets:::as.tags.htmlwidget( vn$plot)
+
+# s <- visNetwork::renderVisNetwork(w[[1]])
+f <-  here::here("figures","contributors_network.html")
+htmlwidgets::saveWidget(vn$plot, 
+                        file = f,
+                        selfcontained = TRUE)
+# js2graphic::svgFromHtml(f)
+js2graphic::jsGraphic2Pdf(graphic = vn$plot,
+                          plotDims = c(950, 500, 40, 20),
+                          outFile = here::here("figures",
+                                            "contributors_network.pdf"),
+                          slow = FALSE)
+```
+
+
+
+## Plotly 2D
+
+```{r}
+plt <- plotly_2d(g = g,
+                 show_plot = FALSE,
+                 save_path = here::here("figures","contributors_network_2d.html"))
+```
+
+## Plotly: 3D
+
+```{r}
+plt <- plotly_3d(g = g,
+                 show_plot = FALSE,
+                 save_path = here::here("figures","contributors_network_3d.html"))
+```
 
 # Session info
 <details>

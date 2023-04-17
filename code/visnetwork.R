@@ -1,4 +1,4 @@
-plot_graph <- function(g,
+visnetwork <- function(g,
                        save_path=here::here("figures",
                                             "contributors_network.html"),
                        layout = "layout_with_kk",
@@ -17,11 +17,19 @@ plot_graph <- function(g,
                        background = "rgb(8,36,81)",
                        open=FALSE,
                        stabilization = TRUE,
+                       select_dropdown = TRUE,
+                       navigationButtons = FALSE,
+                       width = "100%", 
+                       height = "90vh",
                        randomSeed = 2023){
     # devoptera::args2vars(plot_graph, packages="dplyr")
     #### Create plot ####
     set.seed(randomSeed)
     # igraph::V(g)$y <- ifelse(igraph::V(g)$name=="Deep Structure",)
+    start <- data.table::as.data.table(g)[,list(x=ifelse(group=="Deep Structure" |entity=="Deep Structure",
+                                                         -100,100),
+                                                y=0)] |> as.matrix()
+    
     vn <-  
         visNetwork::toVisNetworkData(g) %>%
         {
@@ -30,23 +38,26 @@ plot_graph <- function(g,
                                           style="color:white"),
                               submain = list(text=submain,
                                              style="color:white"),
-                              width = "100%", 
-                              height = "90vh",
-                              background = background)
+                              background = background,
+                              width = width,
+                              height = height
+                              )
                     )
             )
         } |>
         # visNetwork::visIgraph(igraph = g, type="full") |> 
-        # visNetwork::visIgraphLayout(layout = "layout_with_graphopt",
-        #                             # layout = "layout_with_kk",
-        #                             # type = "full",
-        #                             # charge = .025,
-        #                             # mass = 100,
-        #                             # spring.length = 50,
-        #                             # spring.constant = 1,
-        #                             physics = physics,
-        #                             randomSeed = randomSeed) |>
-        visNetwork::visLayout(randomSeed = randomSeed) |>
+        visNetwork::visIgraphLayout(layout = "layout_with_graphopt",
+                                    # layout = "layout_with_kk",
+                                    type = "full",
+                                    start = start,
+                                    # niter = 50,
+                                    # charge = .025,
+                                    # mass = 100,
+                                    # spring.length = 50,
+                                    # spring.constant = 1,
+                                    physics = physics,
+                                    randomSeed = randomSeed) |>
+        # visNetwork::visLayout(randomSeed = randomSeed) |>
         visNetwork::visPhysics(solver=solver,
                                # timestep = .25,
                                # maxVelocity = 100, 
@@ -74,7 +85,7 @@ plot_graph <- function(g,
                              #                         )
                              # )
         ) |>
-        visNetwork::visEdges(arrows = "",
+        visNetwork::visEdges(arrows = NULL,
                              # shadow = list(enabled=TRUE,
                              #               size = 20, 
                              #               color="rgba(255,255,255,0.5)"), 
@@ -83,19 +94,24 @@ plot_graph <- function(g,
                                            roundness=.5),
                              dashes = TRUE,
                              width = 3) |>
-        # visNetwork::visExport(type = "pdf", 
+        # visNetwork::visExport(type = "pdf",
         #                       name = gsub("\\.html","",basename(save_path))) |>
         # visNetwork::visGroups(groupname = "Deep Structure", color = "yellow", shape = "triangle") |>
         visNetwork::visInteraction(hover = TRUE,
-                                   navigationButtons = TRUE,
+                                   navigationButtons = navigationButtons,
                                    tooltipDelay = 100) |>
         # visNetwork::visLegend() |>
-        visNetwork::visOptions(selectedBy = list(variable="cluster_str",
-                                                 main="--",
-                                                 sort=FALSE),  
-                               autoResize = TRUE, 
-                               highlightNearest = list(enabled=TRUE,
-                                                       degree=1))  
+        visNetwork::visOptions(
+            # width = "300%",
+            # height = "100vh",
+            selectedBy = if(isTRUE(select_dropdown)){
+                list(variable="cluster_str",
+                     main="--",
+                     sort=FALSE)
+                } else {NULL},  
+            autoResize = TRUE, 
+            highlightNearest = list(enabled=TRUE,
+                                    degree=1))  
     vn <-  vn |> visNetwork::visEvents(type = "on", 
                                        doubleClick = "function(){ this.fit()}")        
     if(!is.null(groups)){
@@ -115,7 +131,8 @@ plot_graph <- function(g,
         visNetwork::visSave(vn, 
                             file = save_path, 
                             selfcontained = TRUE,
-                            background = background)
+                            background = if(is.null(background)) "white" else background
+                            )
     } 
     if(isTRUE(open)) utils::browseURL(save_path)
     return(list(plot=vn,

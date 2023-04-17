@@ -1,4 +1,4 @@
-plot_3d <- function(g,
+plotly_3d <- function(g,
                     layout_func = igraph::layout.fruchterman.reingold,
                     node_color_var = "subcluster_str",
                     edge_color_var = "zend",
@@ -42,7 +42,7 @@ plot_3d <- function(g,
                           xend = ~xend,
                           yend = ~yend,
                           # zend = ~zend,
-                          # color = ~get(edge_color_var),
+                          color = ~get(edge_color_var),
                           colors = rev(edge_palette(50)),
                           line = list(shape = "spline"),
                           type = "scatter3d",
@@ -158,4 +158,5 @@ plot_3d <- function(g,
                                 file = save_path,
                                 selfcontained = TRUE)
     }
+    return(fig)
 }
