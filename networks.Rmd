@@ -1,0 +1,113 @@
+---
+title: "networks"
+author: "Brian M. Schilder"
+date: "`r Sys.Date()`"
+output: html_document
+
+---
+
+```{r setup} 
+devoptera::source_all(here::here("code"))
+```
+
+# Contributors network
+
+## Construct network
+
+```{r}
+g <- prep_graph()
+```
+
+## Visnetwork
+
+brew ins
+
+```{r, results='asis'}
+source(here::here("code/visnetwork.R"))
+vn <- visnetwork(g = g,  
+                 randomSeed = 2020,
+                 physics = TRUE, 
+                 submain = NULL,
+                 x_start=c(0,1000),
+                 y_start=c(100,-100),
+                 # background = "white",
+                 stroke_alpha = .9,
+                 save_path = here::here("figures",
+                                                             "contributors_network.html"),
+                 # width = "2000px",
+                 # height = "100vh",
+                 # background = NULL,
+                 # select_dropdown = FALSE, main = NULL,submain = NULL,
+                 # stabilization = FALSE, 
+                 # groups = unique(igraph::V(g)$group)[-1],
+                 #   save_path=here::here("figures",
+                 #                        "contributors_network_collapsed.html"),
+                 open = TRUE) 
+
+
+```
+
+### Save PDF
+
+
+```{r}
+f <-  here::here("figures","contributors_network.html")
+res <- 8
+vwidth = 992*res
+vheight = 744*res
+# cliprect = c(.5*vwidth,
+#              .3*vheight,
+#              .5*vwidth,
+#              .3*vheight)
+fpng <- gsub("\\.html",".png",f)
+webshot2::webshot(url = f,
+                  file = fpng,
+                 vwidth = vwidth,
+                 vheight = vheight,
+                 delay = 10, 
+                 zoom = 1)
+
+webshot2::resize(filename = fpng,
+                 geometry = "150%")
+webshot2::shrink(fpng)
+
+```
+
+```{r}
+htmlwidgets::saveWidget(vn$plot, 
+                        file = paste0(f,".pdf"),
+                        knitrOptions = list("out.width"=14),
+                        selfcontained = TRUE)
+# w <- htmlwidgets:::as.tags.htmlwidget( vn$plot)
+# s <- visNetwork::renderVisNetwork(w[[1]])
+# js2graphic::svgFromHtml(f)
+js2graphic::jsGraphic2Pdf(graphic = f,
+                          plotDims = c(vwidth, vheight, 0, 0),
+                          outFile = gsub("\\.html","2.pdf",f),
+                          slow = TRUE)
+```
+
+
+
+## Plotly 2D
+
+```{r}
+plt <- plotly_2d(g = g,
+                 show_plot = FALSE,
+                 save_path = here::here("figures","contributors_network_2d.html"))
+```
+
+## Plotly: 3D
+
+```{r}
+plt <- plotly_3d(g = g,
+                 show_plot = FALSE,
+                 save_path = here::here("figures","contributors_network_3d.html"))
+```
+
+# Session info
+<details>
+```{r}
+utils::sessionInfo()
+```
+</details>

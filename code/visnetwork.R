@@ -21,14 +21,18 @@ visnetwork <- function(g,
                        navigationButtons = TRUE,
                        width = "100%", 
                        height = "90vh",
+                       x_start=c(0,1000),
+                       y_start=c(100,-100),
+                       stroke_alpha = .5,
                        randomSeed = 2023){
     # devoptera::args2vars(plot_graph, packages="dplyr")
     #### Create plot ####
     set.seed(randomSeed)
     # igraph::V(g)$y <- ifelse(igraph::V(g)$name=="Deep Structure",)
     start <- data.table::as.data.table(g)[,list(x=ifelse(group=="Deep Structure" |entity=="Deep Structure",
-                                                         -100,100),
-                                                y=0)] |> as.matrix()
+                                                         x_start[1],x_start[2]),
+                                                y=ifelse(group=="Deep Structure" |entity=="Deep Structure",
+                                                         y_start[1],y_start[2]))] |> as.matrix()
     
     vn <-  
         visNetwork::toVisNetworkData(g) %>%
@@ -67,7 +71,9 @@ visnetwork <- function(g,
                                enabled = physics) |>
         visNetwork::visNodes(font = list(color="white", 
                                          strokeWidth=5,
-                                         strokeColor="rgba(0,0,0,0.5)"),  
+                                         strokeColor=paste0(
+                                             "rgba(0,0,0,",stroke_alpha,")"
+                                         )),  
                              shadow = list(enabled=TRUE,
                                            size = 5, 
                                            color="rgba(255,255,255,0.5)"), 
@@ -107,6 +113,11 @@ visnetwork <- function(g,
             selectedBy = if(isTRUE(select_dropdown)){
                 list(variable="cluster_str",
                      main="--",
+                     style="
+                     position: fixed;
+                     top: 10px;
+                     left: 10px;
+                     z-index:10;",
                      sort=FALSE)
                 } else {NULL},  
             autoResize = TRUE, 

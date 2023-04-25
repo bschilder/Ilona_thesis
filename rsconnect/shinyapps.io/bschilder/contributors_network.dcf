@@ -1,0 +1,14 @@
+name: contributors_network
+title: contributors_network
+username:
+account: bschilder
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8952563
+bundleId: 7135625
+url: https://bschilder.shinyapps.io/contributors_network/
+when: 1682463674.0814
+lastSyncTime: 1682463674.08141
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: code/plotly_2d.R|code/plotly_3d.R|networks.html|networks.Rmd|README.md|figures
