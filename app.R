@@ -8,13 +8,13 @@ nodes <- as.data.frame(g)
 server <- function(input, output) {
     output$network_proxy_nodes <- visNetwork::renderVisNetwork({ 
         vn <- visnetwork(g = g,  
-                         randomSeed = 2020,
+                         randomSeed = 2019,
                          physics = TRUE, 
                          main = NULL,
                          submain = NULL, 
                          save_path = NULL,
                          show_plot = FALSE,
-                         navigationButtons = FALSE, 
+                         navigationButtons = TRUE, 
                          select_dropdown = TRUE, 
                          open = FALSE)    
         vn$plot
@@ -22,16 +22,9 @@ server <- function(input, output) {
     
 }
 
-ui <-  div(style="margin: -1.5% -2% 0% -2%",
+ui <-  div(style=paste("margin: -2% -2% 0% -2%",
+                       sep=";"),
            fluidPage(  
-               shiny::absolutePanel(
-                   shiny::helpText(
-                       fontawesome::fa("question-circle",
-                                       stroke_width = 2,fill = "white"),
-                       "instructions"
-                   )
-                   
-               ),
         visNetworkOutput("network_proxy_nodes",
                          width = "100%", 
                          height = "105vh")

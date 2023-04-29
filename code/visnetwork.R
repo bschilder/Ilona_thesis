@@ -5,9 +5,9 @@ visnetwork <- function(g,
                        solver = "forceAtlas2Based",
                        physics = FALSE,
                        forceAtlas2Based = list(
-                           damping=3.75,# higher damping = less spinning
-                           avoidOverlap=2,
-                           gravitationalConstant= -175
+                           damping=3.25,# higher damping = less spinning
+                           avoidOverlap=5,
+                           gravitationalConstant= -140
                            # springLength=50
                            ),
                        groups = NULL,
@@ -70,6 +70,7 @@ visnetwork <- function(g,
                                                     fit=TRUE),
                                enabled = physics) |>
         visNetwork::visNodes(font = list(color="white", 
+                                         size=10,
                                          strokeWidth=5,
                                          strokeColor=paste0(
                                              "rgba(0,0,0,",stroke_alpha,")"

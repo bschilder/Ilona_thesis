@@ -27,13 +27,14 @@ source(here::here("code/visnetwork.R"))
 vn <- visnetwork(g = g,  
                  randomSeed = 2020,
                  physics = TRUE, 
+                 main=NULL,
                  submain = NULL,
                  x_start=c(0,1000),
                  y_start=c(100,-100),
                  # background = "white",
-                 stroke_alpha = .9,
-                 save_path = here::here("figures",
-                                                             "contributors_network.html"),
+                 # stroke_alpha = .9,
+                 # save_path = here::here("figures",
+                 #                                             "contributors_network.html"),
                  # width = "2000px",
                  # height = "100vh",
                  # background = NULL,
@@ -59,18 +60,17 @@ vheight = 744*res
 #              .3*vheight,
 #              .5*vwidth,
 #              .3*vheight)
-fpng <- gsub("\\.html",".png",f)
+fpng <- gsub("\\.html",".png",f) 
 webshot2::webshot(url = f,
                   file = fpng,
-                 vwidth = vwidth,
-                 vheight = vheight,
-                 delay = 10, 
-                 zoom = 1)
+                  vwidth = vwidth,
+                  vheight = vheight,
+                  delay = 2, 
+                  zoom = 1.85)
 
-webshot2::resize(filename = fpng,
-                 geometry = "150%")
+# webshot2::resize(filename = fpng,
+#                  geometry = "150%")
 webshot2::shrink(fpng)
-
 ```
 
 ```{r}

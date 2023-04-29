@@ -5,10 +5,10 @@ account: bschilder
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8952563
-bundleId: 7135625
+bundleId: 7153982
 url: https://bschilder.shinyapps.io/contributors_network/
-when: 1682463674.0814
-lastSyncTime: 1682463674.08141
+when: 1682798388.19774
+lastSyncTime: 1682798388.19775
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: code/plotly_2d.R|code/plotly_3d.R|networks.html|networks.Rmd|README.md|figures
+ignoredFiles: code/plotly_2d.R|code/plotly_3d.R|data/.DS_Store|networks.Rmd|README.md|figures

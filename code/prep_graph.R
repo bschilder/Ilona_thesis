@@ -16,9 +16,9 @@ prep_graph <- function(file=here::here("data","contributors.xlsx")){
         ifelse(is.na(role),
                entity,
                paste0(entity," (",role,")") ) |>
-            stringr::str_wrap(width = 50) |>
+            stringr::str_wrap(width = 35) |>
             gsub(pattern="[(]",replacement="\n(") |>
-            gsub(pattern="[,]",replacement=",\n") |>
+            # gsub(pattern="[,]",replacement=",\n") |>
             gsub(pattern="\n\n",replacement="\n") 
     ) 
     ]
